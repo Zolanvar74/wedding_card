@@ -1,0 +1,2589 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#66664e">
+  <title>Wedding invitation</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@400&family=Vazirmatn:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --olive: #66664e;
+      --paper: #eeeadd;
+      --paper-light: #f5f1e7;
+      --ink: #777365;
+      --invite-ink: #696653;
+      --invite-olive: #73745a;
+      --invite-line: rgba(102, 102, 78, 0.30);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    html {
+      background: var(--olive);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      color: var(--ink);
+      background: var(--olive);
+      font-family: "Vazirmatn", sans-serif;
+      overflow: hidden;
+    }
+
+    /* ==============================
+       INTRO VIDEO — اولین صفحه سایت
+    ============================== */
+    .video-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: block;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      background: #000;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .video-layer video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      cursor: pointer;
+    }
+
+    /* راهنمای شروع ویدیو؛ فقط تا پیش از اولین پخش */
+    .video-start-hint {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: max-content;
+      max-width: calc(100% - 40px);
+      padding: 15px 22px 17px;
+      color: #f5f1e7;
+      text-align: center;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      animation: hintBreathe 2.4s ease-in-out infinite;
+    }
+
+    .video-start-hint[hidden] {
+      display: none !important;
+    }
+
+    .video-start-hint .hint-play {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border: 1px solid rgba(245, 241, 231, 0.82);
+      border-radius: 50%;
+      background: rgba(75, 76, 55, 0.55);
+      box-shadow: 0 4px 22px rgba(0, 0, 0, 0.22);
+    }
+
+    .video-start-hint .hint-play::before {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border: 1px solid rgba(245, 241, 231, 0.52);
+      border-radius: 50%;
+      animation: hintPulse 2s ease-out infinite;
+    }
+
+    .video-start-hint .hint-play svg {
+      width: 19px;
+      height: 19px;
+      margin-left: 3px;
+      fill: #f5f1e7;
+    }
+
+    .video-start-hint .hint-label {
+      padding: 7px 15px;
+      border: 1px solid rgba(245, 241, 231, 0.38);
+      border-radius: 30px;
+      background: rgba(75, 76, 55, 0.62);
+      color: #f5f1e7;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.8;
+      letter-spacing: 0;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.28);
+      white-space: nowrap;
+    }
+
+    @keyframes hintBreathe {
+      0%, 100% { opacity: 0.88; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes hintPulse {
+      0% { transform: scale(0.92); opacity: 0.65; }
+      100% { transform: scale(1.32); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .video-start-hint,
+      .video-start-hint .hint-play::before {
+        animation: none !important;
+      }
+    }
+
+    .video-layer[hidden] {
+      display: none !important;
+    }
+
+    /* ==============================
+       PAPER BACKGROUND
+    ============================== */
+    .paper {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      background-color: var(--olive);
+      background-image:
+        linear-gradient(rgba(245, 241, 231, 0.12), rgba(245, 241, 231, 0.12)),
+        url("./background.png");
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .paper.is-visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* محتوای دعوت‌نامه داخل همین بخش اسکرول می‌شود */
+    .invitation-content {
+      position: relative;
+      z-index: 2;
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      padding: 5svh 6vw 8svh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      text-align: center;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      scrollbar-width: none;
+    }
+
+    .invitation-content::-webkit-scrollbar { display: none; }
+
+    .invite-wrap {
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+      color: var(--invite-ink);
+    }
+
+    /* ==============================
+       INVITATION CONTENT
+    ============================== */
+    .invite-kicker {
+      font-family: "ShekastehNastaliq", serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      margin: 0 0 1.2rem;
+      opacity: 0.8;
+    }
+
+    .names-fa {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.75rem;
+      direction: rtl;
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: clamp(2.5rem, 10vw, 3.5rem);
+      line-height: 2.1;
+    }
+
+    .name-joiner {
+      font-size: 0.65em;
+      opacity: 0.75;
+    }
+
+    .names-en {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.15rem, 5vw, 1.5rem);
+      letter-spacing: 0.22em;
+      margin: 0.2rem 0 1.2rem;
+    }
+
+    .names-en span {
+      font-style: italic;
+      padding: 0 0.2rem;
+    }
+
+    .invite-ornament {
+      color: var(--invite-olive);
+      font-size: 1.3rem;
+      margin: 1rem 0;
+      opacity: 0.75;
+    }
+
+    .section-divider {
+      color: var(--invite-olive);
+      font-size: 1.2rem;
+      margin: 1.5rem auto;
+      opacity: 0.7;
+    }
+
+    .poem {
+      font-family: "ShekastehNastaliq", serif;
+      font-size: clamp(0.95rem, 4vw, 1.15rem);
+      line-height: 2.5;
+      margin: 1.3rem 0;
+    }
+
+    .poem p { margin: 0.3rem 0; }
+
+    .section-label {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 1.1rem;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      direction: rtl;
+    }
+
+    .countdown-item {
+      padding: 0.8rem 0.15rem;
+      border-top: 1px solid var(--invite-line);
+      border-bottom: 1px solid var(--invite-line);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .countdown-item strong {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.5rem, 7vw, 2rem);
+      font-weight: 500;
+      direction: ltr;
+    }
+
+    .countdown-item span {
+      display: block;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.7rem;
+      margin-top: 0.3rem;
+    }
+
+    #countdownEnded {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: 1.1rem;
+    }
+
+    .event-date {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      margin: 0.6rem 0 1.3rem;
+    }
+
+    .event-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--invite-line);
+      border-bottom: 1px solid var(--invite-line);
+      padding: 1rem 0;
+      gap: 0.5rem;
+    }
+
+    .event-detail span,
+    .event-detail strong {
+      display: block;
+      font-family: "Vazirmatn", sans-serif;
+    }
+
+    .event-detail span {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-detail strong {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .venue-address {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.8rem;
+      line-height: 2;
+      margin: 1.2rem 0;
+    }
+
+    .map-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .map-buttons a {
+      text-decoration: none;
+      color: var(--invite-ink);
+      border: 1px solid var(--invite-line);
+      border-radius: 30px;
+      padding: 0.65rem 1rem;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.72rem;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .attendance-section {
+      max-width: 350px;
+      margin: 0.5rem auto;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.78rem;
+      line-height: 2.3;
+      opacity: 0.85;
+    }
+
+    .closing-section {
+      margin-top: 1.7rem;
+      padding-bottom: 2rem;
+    }
+
+    .closing-text {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: 1.7rem;
+      line-height: 2;
+      margin: 0.5rem 0;
+    }
+
+    .closing-names {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      margin-top: 0.7rem;
+    }
+
+    /* ==============================
+       MUSIC CONSENT DIALOG
+    ============================== */
+    .music-consent {
+      position: fixed;
+      inset: 0;
+      z-index: 11000;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(55, 56, 39, 0.32);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .music-consent[hidden] { display: none !important; }
+
+    .music-consent-card {
+      position: relative;
+      width: min(100%, 370px);
+      padding: 35px 25px;
+      text-align: center;
+      color: var(--olive);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.65), transparent 55%),
+        linear-gradient(145deg, #f7f2e7, #eae3d3);
+      border: 1px solid rgba(102,102,78,.45);
+      border-radius: 14px;
+      box-shadow: 0 15px 45px rgba(0,0,0,.18), inset 0 0 20px rgba(255,255,255,.3);
+    }
+
+    .music-ornament {
+      font-family: Georgia, serif;
+      font-size: 35px;
+      color: #77775a;
+      margin-bottom: 12px;
+    }
+
+    .music-small-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #96917d;
+      margin: 0 0 14px;
+    }
+
+    .music-consent-card h2 {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 21px;
+      font-weight: 400;
+      margin: 0 0 18px;
+    }
+
+    .music-description {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 13px;
+      line-height: 2.2;
+      color: #777365;
+      margin: 0 0 25px;
+    }
+
+    .music-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .music-actions button {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 30px;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .music-yes {
+      background: #66664e;
+      color: #f5f1e7;
+      border: 1px solid #66664e;
+    }
+
+    .music-no {
+      background: transparent;
+      color: #66664e;
+      border: 1px solid rgba(102,102,78,.45);
+    }
+
+    .music-message {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 11px;
+      line-height: 1.8;
+      color: #8b5144;
+      margin: 12px 0 0;
+    }
+
+    /* ==============================
+       FLOATING MUSIC BUTTON + NOTICE
+    ============================== */
+    .music-toggle {
+      position: fixed;
+      right: max(18px, env(safe-area-inset-right));
+      bottom: max(20px, env(safe-area-inset-bottom));
+      z-index: 12000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      min-height: 50px;
+      padding: 0;
+      border-radius: 50%;
+      background: rgba(102,102,78,.97);
+      color: #f5f1e7;
+      border: 1px solid rgba(245,241,231,.72);
+      box-shadow: 0 5px 18px rgba(0,0,0,.22);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .music-toggle[hidden] { display: none !important; }
+    .music-toggle:active { transform: scale(.94); }
+
+    #musicIcon {
+      position: relative;
+      z-index: 1;
+      font-family: Arial, sans-serif;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    /* نوت‌های ظریف موسیقی؛ فقط هنگام پخش آهنگ */
+    .music-notes {
+      position: absolute;
+      inset: 0;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .music-notes span {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      display: block;
+      color: #f5e8c5;
+      font-family: Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0;
+      -webkit-text-stroke: 0.35px rgba(91, 83, 55, 0.55);
+      text-shadow: 0 2px 8px rgba(35, 36, 25, 0.48);
+      transform: translate3d(0, 0, 0) scale(0.65);
+    }
+
+    .music-toggle[aria-pressed="true"] .music-notes span {
+      animation: musicNoteLift 2.6s ease-out infinite;
+    }
+
+    .music-notes span:nth-child(1) {
+      left: 23%;
+      color: #fff1cf;
+      font-size: 20px;
+      --note-x: -13px;
+      --note-rotate: -18deg;
+      animation-delay: 0s;
+    }
+
+    .music-notes span:nth-child(2) {
+      left: 53%;
+      color: #e5e2b9;
+      font-size: 23px;
+      --note-x: 5px;
+      --note-rotate: 12deg;
+      animation-delay: 0.85s;
+    }
+
+    .music-notes span:nth-child(3) {
+      left: 79%;
+      color: #ead29a;
+      font-size: 19px;
+      --note-x: 15px;
+      --note-rotate: 23deg;
+      animation-delay: 1.7s;
+    }
+
+    @keyframes musicNoteLift {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 9px, 0) scale(0.6) rotate(0deg);
+      }
+      16% { opacity: 1; }
+      72% { opacity: 0.9; }
+      100% {
+        opacity: 0;
+        transform: translate3d(var(--note-x, 0), -66px, 0) scale(1.08) rotate(var(--note-rotate, 0deg));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .music-toggle[aria-pressed="true"] .music-notes span {
+        animation: none !important;
+        opacity: 0;
+      }
+    }
+
+    .music-notice {
+      position: fixed;
+      left: 50%;
+      bottom: 85px;
+      transform: translateX(-50%);
+      z-index: 13000;
+      width: max-content;
+      max-width: calc(100% - 36px);
+      padding: 10px 16px;
+      border-radius: 12px;
+      background: #f5f1e7;
+      color: #66664e;
+      border: 1px solid rgba(102,102,78,.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,.12);
+      text-align: center;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .music-notice:empty { display: none; }
+
+    /* ==============================
+       MOBILE TUNING
+    ============================== */
+    @media (max-width: 520px) {
+      .invitation-content { padding: 4svh 5vw 8svh; }
+      .music-consent-card {
+        width: 100%;
+        max-width: 340px;
+        padding: 30px 22px;
+      }
+      .music-consent-card h2 { font-size: 20px; }
+      .music-description { font-size: 13px; }
+    }
+
+    @media (max-width: 360px) {
+      .countdown-grid { gap: 0.25rem; }
+      .countdown-item { padding: 0.6rem 0.1rem; }
+      .map-buttons a { padding: 0.6rem 0.7rem; font-size: 0.68rem; }
+      .event-details { gap: 0.25rem; }
+    }
+
+    /* بدون محوشدن یا ترنزیشن هنگام پایان ویدیو */
+    .video-layer,
+    .video-layer video,
+    .paper {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    @font-face {
+      font-family: "ShekastehNastaliq";
+      src: url("./fonts/ShekastehNastaliq.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Photo Stickers */
+    .photo-stickers {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(20px, 7vw, 32px);
+      margin: 1.5rem auto 2rem;
+      direction: ltr;
+    }
+
+    .photo-sticker {
+      position: relative;
+      width: clamp(88px, 27vw, 116px);
+      margin: 0;
+      padding: 5px 5px 16px;
+      background: #f7f4eb;
+      border: 1px solid rgba(120, 110, 85, 0.18);
+      box-shadow: 0 6px 15px rgba(32, 29, 20, 0.22);
+    }
+
+    /* خود عکس */
+    .photo-sticker img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+    }
+
+    /* چسب کاغذی بالای عکس */
+    .photo-sticker::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      width: 40px;
+      height: 13px;
+      transform: translateX(-50%) rotate(-5deg);
+      background: rgba(218, 207, 173, 0.78);
+      border: 1px solid rgba(145, 130, 100, 0.14);
+      z-index: 2;
+    }
+
+    /* زاویه عکس‌ها */
+    .sticker-left {
+      transform: rotate(-7deg) translateY(4px);
+    }
+
+    .sticker-right {
+      transform: rotate(6deg) translateY(-5px);
+    }
+
+    /* ==============================
+       REFINED TYPOGRAPHY
+       فقط تایپوگرافی و جزئیات نوشتاری
+    ============================== */
+
+    /* متن‌های فارسی معمولی: خوانا و یکدست */
+    .invite-wrap {
+      font-family: "Vazirmatn", sans-serif;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    /* عبارت آغازین: ظریف و خوش‌نویسانه */
+    .invite-kicker {
+      font-family: "ShekastehNastaliq", "Noto Nastaliq Urdu", serif;
+      font-size: clamp(1.05rem, 4.4vw, 1.22rem);
+      line-height: 2.1;
+      letter-spacing: 0;
+      margin-bottom: 0.85rem;
+      color: #77745f;
+      opacity: 0.9;
+    }
+
+    /* شعر: شکسته‌نستعلیق با اندازه و فاصله خواناتر */
+    .poem {
+      font-family: "ShekastehNastaliq", "Noto Nastaliq Urdu", serif;
+      font-size: clamp(1.08rem, 4.5vw, 1.28rem);
+      line-height: 2.35;
+      font-weight: 400;
+      color: #706d59;
+      margin: 1rem 0 1.45rem;
+    }
+
+    .poem p {
+      margin: 0.12rem 0;
+    }
+
+    /* نام‌ها: نقطه کانونی صفحه */
+    .names-fa {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: clamp(2.15rem, 8.4vw, 2.85rem);
+      line-height: 1.95;
+      gap: 0.62rem;
+      color: #65634f;
+      font-weight: 400;
+    }
+
+    .name-joiner {
+      font-size: 0.52em;
+      opacity: 0.72;
+    }
+
+    /* ردیف نام خانوادگی کمی جمع‌وجورتر تا دو ردیف متعادل شوند */
+    .names-fa + .names-fa {
+      font-size: clamp(1.95rem, 7.5vw, 2.55rem);
+      line-height: 1.9;
+      margin-top: -0.05rem;
+    }
+
+    .invite-ornament {
+      font-size: 1.12rem;
+      line-height: 1.5;
+      margin: 0.8rem 0;
+      color: #77775d;
+      opacity: 0.78;
+    }
+
+    .section-divider {
+      font-size: 1.02rem;
+      line-height: 1;
+      margin: 1.25rem auto;
+      color: #85836b;
+      opacity: 0.72;
+    }
+
+    /* عنوان بخش‌ها */
+    .section-label {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      line-height: 1.9;
+      letter-spacing: 0.01em;
+      color: #77745f;
+      margin: 0 0 0.85rem;
+    }
+
+    /* شمارش معکوس */
+    .countdown-item {
+      padding: 0.68rem 0.12rem;
+    }
+
+    .countdown-item strong {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.45rem, 6.2vw, 1.85rem);
+      line-height: 1.15;
+      font-weight: 500;
+      color: #66634f;
+    }
+
+    .countdown-item span {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.68rem;
+      font-weight: 400;
+      line-height: 1.7;
+      color: #77745f;
+      margin-top: 0.28rem;
+    }
+
+    #countdownEnded {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: #6e6b57;
+    }
+
+    /* تاریخ: ساده و خوانا، برای هماهنگی با اطلاعات مراسم */
+    .event-date {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: clamp(1.12rem, 4.8vw, 1.3rem);
+      font-weight: 500;
+      line-height: 2;
+      letter-spacing: 0.01em;
+      color: #65634f;
+      margin: 0.45rem 0 1.05rem;
+    }
+
+    .event-details {
+      padding: 0.9rem 0;
+      gap: 0.55rem;
+    }
+
+    .event-detail span {
+      font-size: 0.7rem;
+      font-weight: 400;
+      line-height: 1.8;
+      margin-bottom: 0.35rem;
+      color: #85816d;
+    }
+
+    .event-detail strong {
+      font-size: 0.84rem;
+      font-weight: 500;
+      line-height: 1.9;
+      color: #66634f;
+    }
+
+    .venue-address {
+      font-size: 0.78rem;
+      font-weight: 400;
+      line-height: 2.1;
+      color: #77745f;
+      margin: 1rem 0;
+    }
+
+    .map-buttons a {
+      font-size: 0.7rem;
+      font-weight: 400;
+      line-height: 1.7;
+      padding: 0.58rem 0.95rem;
+      color: #6d6a56;
+    }
+
+    .attendance-section {
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 2.25;
+      color: #77745f;
+      margin: 1.35rem auto;
+    }
+
+    .closing-section {
+      margin-top: 1.45rem;
+    }
+
+    .closing-text {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: clamp(1.45rem, 6vw, 1.65rem);
+      line-height: 2.15;
+      font-weight: 400;
+      color: #65634f;
+      margin: 0.35rem 0;
+    }
+
+    .closing-names {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: #85816d;
+      margin-top: 0.55rem;
+    }
+
+    /* هماهنگی ظریف‌تر متن پنجره موسیقی با تایپوگرافی صفحه */
+    .music-consent-card h2 {
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.9;
+    }
+
+    .music-description {
+      font-size: 12px;
+      line-height: 2.15;
+    }
+
+    .music-actions button {
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .music-toggle {
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .music-notice {
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .invite-kicker { margin-bottom: 0.7rem; }
+      .poem { margin: 0.85rem 0 1.25rem; }
+      .names-fa { gap: 0.52rem; }
+      .section-divider { margin: 1.1rem auto; }
+      .event-date { margin-bottom: 0.9rem; }
+    }
+
+    @media (max-width: 360px) {
+      .names-fa { font-size: 2rem; }
+      .names-fa + .names-fa { font-size: 1.82rem; }
+      .poem { font-size: 1rem; }
+      .event-date { font-size: 1.08rem; }
+    }
+
+
+    /* ==============================
+       REFINED INVITATION LAYOUT
+       چیدمان تازه و متعادل برای نمایش موبایل
+    ============================== */
+
+    .invite-wrap {
+      max-width: 430px;
+      padding: 0 2px 2.5rem;
+    }
+
+    .hero-section {
+      padding-top: 0.25rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .hero-section .invite-kicker {
+      margin: 0 0 0.65rem;
+      font-size: clamp(1.05rem, 4.5vw, 1.2rem);
+      line-height: 2;
+    }
+
+    .couple-names {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(13px, 4vw, 22px);
+      direction: rtl;
+      margin: 0 auto;
+      padding: 0.1rem 0 0.25rem;
+    }
+
+    .person-name {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .person-first {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: clamp(2.2rem, 9vw, 2.85rem);
+      line-height: 1.85;
+      color: #625f4b;
+      white-space: nowrap;
+    }
+
+    .person-family {
+      margin-top: -0.12rem;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: clamp(0.72rem, 3.2vw, 0.86rem);
+      font-weight: 400;
+      letter-spacing: 0.015em;
+      line-height: 1.8;
+      color: #89846e;
+      white-space: nowrap;
+    }
+
+    .couple-connector {
+      align-self: center;
+      margin-top: -0.15rem;
+      font-family: "ShekastehNastaliq", "Noto Nastaliq Urdu", serif;
+      font-size: 1.45rem;
+      color: #8a876d;
+      opacity: 0.9;
+    }
+
+    .hero-section .invite-ornament {
+      margin: 0.8rem 0 0.2rem;
+      font-size: 1.05rem;
+    }
+
+    .photo-stickers {
+      gap: clamp(24px, 8vw, 38px);
+      margin: 0.8rem auto 1.55rem;
+    }
+
+    .photo-sticker {
+      width: clamp(94px, 29vw, 118px);
+      padding: 5px 5px 15px;
+      box-shadow: 0 7px 17px rgba(32, 29, 20, 0.2);
+    }
+
+    .sticker-left {
+      transform: rotate(-6deg) translateY(5px);
+    }
+
+    .sticker-right {
+      transform: rotate(5deg) translateY(-3px);
+    }
+
+    .poem {
+      max-width: 390px;
+      margin: 0 auto 1.6rem;
+      padding: 0.8rem 0.45rem 0.95rem;
+      border-top: 1px solid rgba(102, 102, 78, 0.22);
+      border-bottom: 1px solid rgba(102, 102, 78, 0.22);
+      font-size: clamp(1.02rem, 4.25vw, 1.2rem);
+      line-height: 2.25;
+      color: #706d59;
+    }
+
+    .poem p {
+      margin: 0.08rem 0;
+    }
+
+    .event-overview {
+      margin: 0 auto 1.35rem;
+      padding: 1.1rem 0.8rem 1.15rem;
+      border: 1px solid rgba(102, 102, 78, 0.25);
+      background: rgba(245, 241, 231, 0.19);
+      box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.08);
+    }
+
+    .event-overview .section-label {
+      margin-bottom: 0.25rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    .event-date {
+      margin: 0.05rem 0 0.55rem;
+      font-size: clamp(1.22rem, 5.2vw, 1.42rem);
+      line-height: 2;
+      color: #625f4b;
+    }
+
+    .overview-rule {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 62%;
+      margin: 0.35rem auto 0.65rem;
+      color: #929078;
+      font-size: 0.78rem;
+    }
+
+    .overview-rule::before,
+    .overview-rule::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(102, 102, 78, 0.23);
+    }
+
+    .countdown-heading {
+      margin-bottom: 0.65rem !important;
+    }
+
+    .countdown-grid {
+      gap: 0.38rem;
+    }
+
+    .countdown-item {
+      padding: 0.65rem 0.1rem 0.58rem;
+      border: 1px solid rgba(102, 102, 78, 0.2);
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .countdown-item strong {
+      font-size: clamp(1.42rem, 6vw, 1.8rem);
+    }
+
+    .countdown-item span {
+      font-size: 0.66rem;
+    }
+
+    #countdownEnded {
+      margin: 0.4rem 0 0;
+    }
+
+    .event-section {
+      margin: 0 auto 1.35rem;
+      padding: 0.2rem 0 0.15rem;
+    }
+
+    .event-section > .section-label {
+      margin-bottom: 0.8rem;
+    }
+
+    .event-details {
+      gap: 0.55rem;
+      padding: 0;
+      border: 0;
+    }
+
+    .event-detail {
+      padding: 0.85rem 0.45rem;
+      border: 1px solid rgba(102, 102, 78, 0.23);
+      background: rgba(245, 241, 231, 0.2);
+    }
+
+    .event-detail span {
+      margin-bottom: 0.35rem;
+      font-size: 0.69rem;
+    }
+
+    .event-detail strong {
+      font-size: 0.83rem;
+    }
+
+    .venue-address {
+      margin: 0.85rem 0 0.55rem;
+      font-size: 0.76rem;
+    }
+
+    .map-buttons {
+      margin: 0.6rem 0 0;
+      gap: 0.55rem;
+    }
+
+    .map-buttons a {
+      min-width: 128px;
+      padding: 0.58rem 0.85rem;
+      border-color: rgba(102, 102, 78, 0.32);
+      background: rgba(245, 241, 231, 0.16);
+      font-size: 0.69rem;
+    }
+
+    .attendance-section {
+      max-width: 365px;
+      margin: 1.1rem auto 0.9rem;
+      padding: 0.85rem 0.8rem;
+      border-top: 1px solid rgba(102, 102, 78, 0.22);
+      border-bottom: 1px solid rgba(102, 102, 78, 0.22);
+      font-size: 0.73rem;
+      line-height: 2.2;
+      opacity: 0.9;
+    }
+
+    .attendance-section p {
+      margin: 0;
+    }
+
+    .closing-section {
+      margin-top: 0.8rem;
+      padding-bottom: 1.2rem;
+    }
+
+    .closing-section .invite-ornament {
+      margin: 0.35rem 0 0.15rem;
+    }
+
+    .closing-text {
+      margin: 0.1rem 0;
+      font-size: clamp(1.45rem, 6vw, 1.65rem);
+    }
+
+    .closing-names {
+      margin-top: 0.35rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.22em;
+    }
+
+    /* نمایش آرام از بالا به پایین، مطابق گروه‌بندی جدید */
+    .paper.is-visible .invite-wrap > * {
+      opacity: 0;
+      animation: invitationItemReveal 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+      will-change: opacity, transform;
+    }
+
+    @keyframes invitationItemReveal {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 11px, 0);
+      }
+      to {
+        opacity: var(--reveal-opacity, 1);
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    .hero-section { --reveal-opacity: 1; }
+    .invite-kicker,
+    .attendance-section { --reveal-opacity: 0.9; }
+    .invite-ornament { --reveal-opacity: 0.78; }
+
+.paper.is-visible .invite-wrap > :nth-child(1) { animation-delay: 0.8s; }
+.paper.is-visible .invite-wrap > :nth-child(2) { animation-delay: 1.6s; }
+.paper.is-visible .invite-wrap > :nth-child(3) { animation-delay: 2.4s; }
+.paper.is-visible .invite-wrap > :nth-child(4) { animation-delay: 3.2s; }
+.paper.is-visible .invite-wrap > :nth-child(5) { animation-delay: 4.0s; }
+.paper.is-visible .invite-wrap > :nth-child(6) { animation-delay: 4.8s; }
+.paper.is-visible .invite-wrap > :nth-child(7) { animation-delay: 5.6s; }
+    @media (max-width: 520px) {
+      .invitation-content { padding: 3.2svh 5.5vw 7svh; }
+      .invite-wrap { max-width: 420px; }
+      .hero-section { margin-bottom: 0.15rem; }
+      .photo-stickers { margin-top: 0.65rem; margin-bottom: 1.3rem; }
+      .event-overview { padding: 0.95rem 0.65rem 1rem; }
+      .attendance-section { margin-top: 0.9rem; }
+    }
+
+    @media (max-width: 360px) {
+      .couple-names { gap: 10px; }
+      .person-first { font-size: 2rem; }
+      .person-family { font-size: 0.68rem; }
+      .photo-sticker { width: 91px; }
+      .poem { font-size: 0.98rem; }
+      .countdown-grid { gap: 0.25rem; }
+      .countdown-item { padding: 0.55rem 0.05rem; }
+      .event-details { gap: 0.3rem; }
+      .event-detail { padding: 0.7rem 0.25rem; }
+      .map-buttons a { min-width: 0; padding: 0.55rem 0.65rem; font-size: 0.65rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .paper.is-visible .invite-wrap > * {
+        animation: none !important;
+        opacity: var(--reveal-opacity, 1);
+        transform: none;
+        will-change: auto;
+      }
+    }
+
+
+    /* ==============================
+       WARM OLIVE + PARCHMENT CONTRAST
+       افزایش خوانایی بدون از بین بردن بافت کاغذ
+    ============================== */
+
+    :root {
+      --olive: #5d6045;
+      --paper: #eeeadd;
+      --paper-light: #f8f4e8;
+      --ink: #514e3e;
+      --invite-ink: #4f4d3c;
+      --invite-olive: #656849;
+      --invite-line: rgba(79, 77, 60, 0.34);
+    }
+
+    .paper {
+      background-image:
+        linear-gradient(rgba(248, 245, 234, 0.19), rgba(248, 245, 234, 0.19)),
+        url("./background.png");
+    }
+
+    .invite-wrap {
+      color: #4f4d3c;
+      text-shadow: 0 1px 0 rgba(255, 253, 244, 0.18);
+    }
+
+    .person-first {
+      color: #4e5038;
+      text-shadow: 0 1px 0 rgba(255, 252, 239, 0.45);
+    }
+
+    .person-family {
+      color: #68664f;
+      font-weight: 500;
+    }
+
+    .couple-connector,
+    .invite-ornament {
+      color: #66694a;
+    }
+
+    .poem {
+      color: #514e3e;
+      background: rgba(249, 246, 236, 0.78);
+      border: 1px solid rgba(102, 102, 78, 0.24);
+      border-radius: 5px;
+      box-shadow: 0 5px 18px rgba(48, 45, 30, 0.07);
+      text-shadow: none;
+    }
+
+    .event-overview {
+      background: rgba(249, 246, 236, 0.9);
+      border: 1px solid rgba(91, 92, 65, 0.38);
+      box-shadow:
+        0 8px 24px rgba(48, 45, 30, 0.09),
+        inset 0 0 18px rgba(255, 255, 255, 0.32);
+    }
+
+    .event-overview .section-label,
+    .event-section > .section-label {
+      color: #656348;
+      font-weight: 600;
+    }
+
+    .event-date {
+      color: #454832;
+      font-weight: 600;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+
+    .countdown-item {
+      background: rgba(255, 253, 246, 0.88);
+      border: 1px solid rgba(91, 92, 65, 0.3);
+      border-radius: 4px;
+      color: #484a35;
+    }
+
+    .countdown-item strong {
+      color: #4d5038;
+      font-weight: 600;
+    }
+
+    .countdown-item span {
+      color: #69674f;
+      font-weight: 500;
+    }
+
+    .event-detail {
+      background: rgba(249, 246, 236, 0.86);
+      border: 1px solid rgba(91, 92, 65, 0.32);
+      border-radius: 5px;
+      box-shadow: 0 4px 13px rgba(48, 45, 30, 0.05);
+    }
+
+    .event-detail span {
+      color: #706d55;
+      opacity: 1;
+    }
+
+    .event-detail strong {
+      color: #494b36;
+      font-weight: 600;
+    }
+
+    .venue-address {
+      color: #514f3d;
+      font-weight: 500;
+    }
+
+    .map-buttons a {
+      background: #5d6045;
+      color: #fbf7e9;
+      border: 1px solid #5d6045;
+      box-shadow: 0 3px 9px rgba(48, 45, 30, 0.12);
+      font-weight: 500;
+    }
+
+    .map-buttons a:last-child {
+      background: rgba(249, 246, 236, 0.92);
+      color: #50523b;
+      border-color: rgba(91, 92, 65, 0.5);
+    }
+
+    .attendance-section {
+      color: #514e3d;
+      background: rgba(249, 246, 236, 0.8);
+      border: 1px solid rgba(102, 102, 78, 0.25);
+      border-radius: 5px;
+      opacity: 1;
+      box-shadow: 0 4px 15px rgba(48, 45, 30, 0.05);
+    }
+
+    .closing-text {
+      color: #4d5038;
+      text-shadow: 0 1px 0 rgba(255, 253, 244, 0.35);
+    }
+
+    .closing-names {
+      color: #66664b;
+    }
+
+    .photo-sticker {
+      background: #fbf8ee;
+      border-color: rgba(91, 83, 62, 0.24);
+      box-shadow: 0 7px 18px rgba(36, 33, 22, 0.24);
+    }
+
+    /* دیالوگ انتخاب موسیقی */
+    .music-consent {
+      background: rgba(39, 41, 27, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .music-consent-card {
+      width: min(100%, 370px);
+      padding: 30px 25px 25px;
+      color: #454832;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.72), transparent 54%),
+        linear-gradient(145deg, #fbf8ee 0%, #eee8d8 100%);
+      border: 1px solid rgba(91, 92, 65, 0.58);
+      border-radius: 15px;
+      box-shadow:
+        0 18px 48px rgba(20, 21, 13, 0.3),
+        inset 0 0 0 4px rgba(255, 255, 255, 0.18);
+    }
+
+    .music-ornament {
+      color: #66694a;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    /* عنوان و زیرعنوان حذف شده‌اند؛ متن پرسش نقش تیتر را دارد */
+    .music-description {
+      max-width: 290px;
+      margin: 0 auto 23px;
+      color: #41442f;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 2.15;
+      text-shadow: none;
+    }
+
+    .music-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      direction: rtl;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .music-actions button {
+      width: 100%;
+      min-width: 0;
+      min-height: 49px;
+      padding: 0.55rem 0.7rem;
+      border-radius: 30px;
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.5;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .music-actions button:active {
+      transform: scale(0.97);
+    }
+
+    .music-yes {
+      background: #5d6045;
+      color: #fffbed;
+      border: 1px solid #5d6045;
+      box-shadow: 0 4px 11px rgba(55, 57, 37, 0.18);
+    }
+
+    .music-no {
+      background: rgba(255, 253, 246, 0.7);
+      color: #4e5039;
+      border: 1px solid rgba(91, 92, 65, 0.52);
+    }
+
+    .music-message {
+      color: #874c3e;
+      font-weight: 600;
+    }
+
+    @media (max-width: 360px) {
+      .music-consent-card {
+        padding: 27px 19px 22px;
+      }
+
+      .music-description {
+        font-size: 15px;
+      }
+
+      .music-actions {
+        gap: 9px;
+      }
+
+      .music-actions button {
+        min-height: 47px;
+        font-size: 14px;
+      }
+    }
+
+    /* Location Address */
+
+.venue-address {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin: 15px auto;
+    padding: 10px 14px;
+
+    color: #4f503a;
+    background: rgba(249, 246, 236, 0.76);
+
+    border: 1px solid rgba(91, 92, 65, 0.25);
+    border-radius: 6px;
+
+    font-family: "Vazirmatn", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.9;
+    text-align: right;
+}
+
+.location-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    width: 27px;
+    height: 27px;
+
+    color: #656849;
+}
+
+.location-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.venue-address-text {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+/* Navigation Buttons */
+
+.map-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin: 18px auto;
+}
+
+.map-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-width: 135px;
+    padding: 10px 13px;
+
+    background: rgba(249, 246, 236, 0.92);
+    border: 1px solid rgba(91, 92, 65, 0.35);
+    border-radius: 10px;
+
+    color: #50523b;
+    text-decoration: none;
+
+    font-family: "Vazirmatn", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+
+    box-shadow: 0 4px 12px rgba(48, 45, 30, 0.08);
+
+    transition: transform 0.2s ease;
+}
+
+.map-link:active {
+    transform: scale(0.96);
+}
+
+.map-link img {
+    width: 29px;
+    height: 29px;
+    object-fit: contain;
+}
+
+.map-arrow {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: #858568;
+}
+
+@media (max-width: 360px) {
+    .map-buttons {
+        gap: 8px;
+    }
+
+    .map-link {
+        min-width: 0;
+        padding: 9px 10px;
+        gap: 6px;
+        font-size: 11px;
+    }
+
+    .map-link img {
+        width: 25px;
+        height: 25px;
+    }
+}
+  
+
+    /* ==========================================
+       FINAL TYPOGRAPHY BALANCE
+       حفظ Vazirmatn برای متن‌های خوانا و یکدست‌سازی
+       نوشته‌های خوشنویسانه با ShekastehNastaliq
+    ========================================== */
+
+    /* نوشته‌های فارسی نمایشی با یک فونت هماهنگ */
+    .invite-kicker,
+    .poem,
+    .person-first,
+    .person-family,
+    .couple-connector,
+    #countdownEnded,
+    .closing-text {
+      font-family: "ShekastehNastaliq", serif;
+      font-weight: 400;
+    }
+
+    /* نام و نام خانوادگی: هر دو با فونت شعر */
+    .person-first {
+      font-size: clamp(2.2rem, 8.8vw, 2.85rem);
+      line-height: 2.05;
+    }
+
+    .person-family {
+      font-size: clamp(1rem, 4.1vw, 1.15rem);
+      line-height: 2.05;
+      letter-spacing: 0;
+      margin-top: -0.08rem;
+    }
+
+    .couple-connector {
+      font-size: 1.5rem;
+      line-height: 2;
+    }
+
+    /* عبارت آغازین و شعر */
+    .invite-kicker {
+      font-size: clamp(1.16rem, 4.7vw, 1.32rem);
+      line-height: 2.2;
+    }
+
+    .poem {
+      font-size: clamp(1.16rem, 4.8vw, 1.34rem);
+      line-height: 2.3;
+    }
+
+    /* عنوان‌ها و اطلاعات عروسی: Vazirmatn کمی درشت‌تر */
+    .section-label {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 2;
+    }
+
+    .countdown-item span {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    #countdownEnded {
+      font-size: 1.2rem;
+      line-height: 2.3;
+    }
+
+    .event-date {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: clamp(1.2rem, 5.2vw, 1.42rem);
+      font-weight: 600;
+      line-height: 2;
+    }
+
+    .event-detail span {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.76rem;
+      font-weight: 500;
+      line-height: 1.9;
+    }
+
+    .event-detail strong {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.9;
+    }
+
+    .venue-address {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 2;
+    }
+
+    .map-link,
+    .map-buttons a {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.8;
+    }
+
+    .attendance-section {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.84rem;
+      font-weight: 500;
+      line-height: 2.2;
+    }
+
+    /* پایان دعوت‌نامه با همان فونت شعر و نام‌ها */
+    .closing-text {
+      font-size: clamp(1.58rem, 6.3vw, 1.78rem);
+      line-height: 2.25;
+      margin: 0.3rem 0;
+    }
+
+    .closing-names {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* متن‌های رابط کاربری نیز کمی خواناتر */
+    .video-start-hint .hint-label {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .music-description {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 1rem;
+      line-height: 2.15;
+    }
+
+    .music-actions button {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.94rem;
+      font-weight: 600;
+    }
+
+    .music-message,
+    .music-notice {
+      font-family: "Vazirmatn", sans-serif;
+      font-size: 0.78rem;
+      line-height: 2;
+    }
+
+    @media (max-width: 360px) {
+      .person-first {
+        font-size: 2.08rem;
+      }
+
+      .person-family {
+        font-size: 0.98rem;
+      }
+
+      .poem {
+        font-size: 1.06rem;
+      }
+
+      .section-label {
+        font-size: 0.86rem;
+      }
+
+      .event-detail strong {
+        font-size: 0.86rem;
+      }
+
+      .map-link,
+      .map-buttons a {
+        font-size: 0.75rem;
+      }
+
+      .attendance-section {
+        font-size: 0.79rem;
+      }
+    }
+/* هماهنگ‌سازی رنگ دکمه گوگل مپ با نشان */
+.map-buttons a:first-child {
+    background: rgba(249, 246, 236, 0.92) !important;
+    color: #50523b !important;
+    border: 1px solid rgba(91, 92, 65, 0.5) !important;
+}
+  
+
+    /* کارت تاریخ: برجسته، ظریف و هماهنگ با کاغذ دعوت */
+    .event-overview {
+      position: relative;
+      max-width: 350px;
+      margin: 1.05rem auto 1.2rem;
+      padding: 1.05rem 1.15rem 0.9rem;
+      overflow: hidden;
+      border: 1px solid rgba(91, 92, 65, 0.42);
+      border-radius: 12px;
+      background:
+        linear-gradient(145deg, rgba(255, 253, 246, 0.97), rgba(239, 234, 219, 0.94));
+      box-shadow:
+        0 8px 23px rgba(48, 45, 30, 0.10),
+        inset 0 0 0 4px rgba(255, 255, 255, 0.28);
+    }
+
+    .event-overview::before {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(102, 102, 78, 0.16);
+      border-radius: 7px;
+      pointer-events: none;
+    }
+
+    .event-overview .section-label {
+      position: relative;
+      margin: 0 0 0.12rem;
+      color: #777451;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+    }
+
+    .event-overview .event-date {
+      position: relative;
+      margin: 0.12rem 0 0.2rem;
+      color: #454832;
+      font-size: clamp(1.38rem, 5.8vw, 1.62rem);
+      font-weight: 700;
+      line-height: 1.95;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .event-overview .overview-rule {
+      position: relative;
+      width: 58%;
+      margin: 0.25rem auto 0;
+      color: #89876a;
+      font-size: 0.82rem;
+    }
+
+    /* ردیف آدرس: نشان در سمت چپ، بدون عنوان و فلش */
+    .venue-address {
+      display: flex;
+      direction: rtl;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 9px;
+      width: 100%;
+      text-align: right;
+    }
+
+    .venue-address-text {
+      flex: 1;
+      min-width: 0;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .venue-map-link {
+      display: grid;
+      place-items: center;
+      flex: 0 0 36px;
+      width: 36px;
+      height: 36px;
+      padding: 3px;
+      margin: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .venue-map-link img {
+      display: block;
+      width: 27px;
+      height: 27px;
+      object-fit: contain;
+    }
+
+    .venue-map-link:active {
+      transform: scale(0.94);
+    }
+
+    @media (max-width: 360px) {
+      .event-overview {
+        margin: 0.9rem auto 1.05rem;
+        padding: 0.95rem 0.95rem 0.8rem;
+      }
+
+      .venue-address {
+        gap: 7px;
+        padding-inline: 10px;
+      }
+
+      .venue-map-link {
+        flex-basis: 33px;
+        width: 33px;
+        height: 33px;
+      }
+
+      .venue-map-link img {
+        width: 25px;
+        height: 25px;
+      }
+    }
+
+
+    /* ==============================
+       یکپارچه‌سازی کارت‌های دعوت‌نامه
+       پس‌زمینه، حاشیه، گوشه‌ها، سایه و عرض مشترک
+    ============================== */
+    :root {
+      --invite-card-bg: rgba(249, 246, 236, 0.88);
+      --invite-card-border: rgba(91, 92, 65, 0.30);
+      --invite-card-radius: 9px;
+      --invite-card-shadow: 0 4px 14px rgba(48, 45, 30, 0.07);
+    }
+
+    .poem,
+    .event-overview,
+    .event-details,
+    .venue-address,
+    .attendance-section {
+      width: 100%;
+      max-width: 420px;
+      border: 1px solid var(--invite-card-border);
+      border-radius: var(--invite-card-radius);
+      background: var(--invite-card-bg);
+      box-shadow: var(--invite-card-shadow);
+    }
+
+    /* متن شعر */
+    .poem {
+      margin: 0 auto 1.15rem;
+      padding: 0.85rem 1rem 0.95rem;
+      color: #514e3e;
+      text-shadow: none;
+    }
+
+    /* کارت روز پیوند: بدون قاب داخلی و گرادیان متفاوت */
+    .event-overview {
+      position: relative;
+      margin: 0 auto 1.15rem;
+      padding: 0.85rem 1rem 0.8rem;
+      overflow: hidden;
+    }
+
+    .event-overview::before {
+      content: none;
+    }
+
+    .event-overview .section-label {
+      position: relative;
+      margin: 0 0 0.12rem;
+      color: #656348;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .event-overview .event-date {
+      position: relative;
+      margin: 0.12rem 0 0.2rem;
+      color: #4d5038;
+      font-size: clamp(1.25rem, 5.3vw, 1.48rem);
+      font-weight: 600;
+      line-height: 1.95;
+      text-shadow: none;
+    }
+
+    .event-overview .overview-rule {
+      position: relative;
+      width: 58%;
+      margin: 0.25rem auto 0;
+    }
+
+    /* زمان و محل در یک کارت مشترک، با جداکننده ظریف */
+    .event-section {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 1.15rem;
+    }
+
+    .event-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin: 0 auto;
+      padding: 0.68rem 0.35rem;
+    }
+
+    .event-detail {
+      padding: 0.2rem 0.4rem;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .event-detail + .event-detail {
+      border-inline-start: 1px solid rgba(91, 92, 65, 0.22);
+    }
+
+    .event-detail span {
+      color: #706d55;
+    }
+
+    .event-detail strong {
+      color: #494b36;
+      font-weight: 600;
+    }
+
+    /* آدرس و لوگوهای نقشه */
+    .venue-address {
+      display: flex;
+      direction: rtl;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 9px;
+      margin: 0.7rem auto 0;
+      padding: 0.72rem 0.9rem;
+      color: #514f3d;
+      text-align: right;
+      font-weight: 500;
+      text-shadow: none;
+    }
+
+    .venue-address-text {
+      flex: 1;
+      min-width: 0;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    /* پیام پایانی */
+    .attendance-section {
+      max-width: 420px;
+      margin: 1rem auto 0.85rem;
+      padding: 0.72rem 1rem;
+      color: #514e3d;
+      text-align: center;
+      line-height: 2.2;
+      opacity: 1;
+      text-shadow: none;
+    }
+
+    .attendance-section p {
+      margin: 0;
+    }
+
+    @media (max-width: 360px) {
+      .poem,
+      .event-overview,
+      .event-details,
+      .venue-address,
+      .attendance-section {
+        padding-inline: 0.75rem;
+      }
+
+      .event-details {
+        padding-block: 0.62rem;
+      }
+
+      .event-detail {
+        padding-inline: 0.25rem;
+      }
+    }
+
+  
+
+    /* ==============================
+       قاب سلطنتی-مینیمال برای کارت‌ها
+       جزئیات ظریف طلایی، بدون تغییر چیدمان
+    ============================== */
+    :root {
+      --invite-card-gold: rgba(151, 129, 82, 0.58);
+      --invite-card-inner-line: rgba(151, 129, 82, 0.22);
+      --invite-card-shadow: 0 5px 16px rgba(48, 45, 30, 0.075);
+    }
+
+    .poem,
+    .event-overview,
+    .event-details,
+    .venue-address,
+    .attendance-section {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      border-radius: 10px;
+      border-color: rgba(91, 92, 65, 0.30);
+      box-shadow:
+        0 5px 16px rgba(48, 45, 30, 0.075),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34);
+    }
+
+    /* خط داخلی بسیار ظریف و یکدست */
+    .poem::before,
+    .event-overview::before,
+    .event-details::before,
+    .venue-address::before,
+    .attendance-section::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      z-index: 0;
+      border: 1px solid var(--invite-card-inner-line);
+      border-radius: 5px;
+      pointer-events: none;
+    }
+
+    /* گوشه‌های L شکل و لوزی‌های ریز؛ حس قاب دعوت‌نامه کلاسیک */
+    .poem::after,
+    .event-overview::after,
+    .event-details::after,
+    .venue-address::after,
+    .attendance-section::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.82;
+      background:
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left top / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left top / 1px 13px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right top / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right top / 1px 13px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left bottom / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left bottom / 1px 13px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right bottom / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right bottom / 1px 13px no-repeat,
+        linear-gradient(45deg, transparent 42%, var(--invite-card-gold) 43% 57%, transparent 58%) center top / 7px 7px no-repeat,
+        linear-gradient(45deg, transparent 42%, var(--invite-card-gold) 43% 57%, transparent 58%) center bottom / 7px 7px no-repeat;
+    }
+
+    /* محتوا همیشه بالاتر از تزئینات قاب باقی بماند */
+    .poem > *,
+    .event-overview > *,
+    .event-details > *,
+    .venue-address > *,
+    .attendance-section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* حفظ جداکننده‌ی مرکزی اطلاعات مراسم در قاب جدید */
+    .event-detail + .event-detail {
+      border-inline-start-color: rgba(151, 129, 82, 0.28);
+    }
+
+    @media (max-width: 360px) {
+      .poem::before,
+      .event-overview::before,
+      .event-details::before,
+      .venue-address::before,
+      .attendance-section::before {
+        inset: 4px;
+      }
+
+      .poem::after,
+      .event-overview::after,
+      .event-details::after,
+      .venue-address::after,
+      .attendance-section::after {
+        inset: 3px;
+        background-size:
+          10px 1px, 1px 10px,
+          10px 1px, 1px 10px,
+          10px 1px, 1px 10px,
+          10px 1px, 1px 10px,
+          6px 6px, 6px 6px;
+      }
+    }
+
+  
+
+    /* ==============================
+       حذف خطوط افقی و تزئینات مرکزی
+       حفظ قاب‌های گوشه‌ای سلطنتی
+    ============================== */
+    .poem,
+    .event-overview,
+    .event-details,
+    .venue-address,
+    .attendance-section {
+      border: 0 !important;
+      box-shadow: 0 4px 14px rgba(48, 45, 30, 0.055) !important;
+    }
+
+    /* حذف خط مستطیلی داخلی */
+    .poem::before,
+    .event-overview::before,
+    .event-details::before,
+    .venue-address::before,
+    .attendance-section::before {
+      content: none !important;
+      display: none !important;
+    }
+
+    /* نگه‌داشتن فقط گوشه‌های L شکل؛ حذف لوزی‌های وسط بالا و پایین */
+    .poem::after,
+    .event-overview::after,
+    .event-details::after,
+    .venue-address::after,
+    .attendance-section::after {
+      background:
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left top / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left top / 1px 13px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right top / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right top / 1px 13px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left bottom / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) left bottom / 1px 13px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right bottom / 13px 1px no-repeat,
+        linear-gradient(var(--invite-card-gold), var(--invite-card-gold)) right bottom / 1px 13px no-repeat !important;
+    }
+
+    /* حذف نماد کوچک و خط تزئینی زیر تاریخ */
+    .event-overview .overview-rule {
+      display: none !important;
+    }
+
+
+  </style>
+</head>
+
+<body>
+  <!-- موسیقی: با لمس ویدیوی آغازین پخش می‌شود -->
+  <audio id="weddingMusic" src="./music.mp3" loop preload="auto"></audio>
+
+  <!-- ویدیوی آغازین؛ با کلیک مهمان پخش می‌شود و صدا ندارد -->
+  <div class="video-layer" id="videoLayer">
+    <video
+      id="introVideo"
+      src="./intro.mp4"
+      preload="auto"
+      playsinline
+      webkit-playsinline
+      muted
+      disablepictureinpicture>
+    </video>
+
+    <div class="video-start-hint" id="videoStartHint" aria-hidden="true">
+      <span class="hint-play">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5.8c0-.78.85-1.26 1.52-.86l10.1 6.2a1 1 0 0 1 0 1.72l-10.1 6.2A1 1 0 0 1 8 18.2V5.8z"/>
+        </svg>
+      </span>
+      <span class="hint-label">برای باز شدن دعوت‌نامه لمس کنید</span>
+    </div>
+  </div>
+
+  <!-- پس‌زمینه کاغذی که پس از پایان ویدیو نمایش داده می‌شود -->
+  <main class="paper" id="paperScreen">
+    <div class="invitation-content">
+      <div class="invite-wrap">
+
+        <!-- سربرگ و نام عروس و داماد -->
+        <section class="hero-section">
+          <p class="invite-kicker">به نام خالق عشق</p>
+
+          <div class="couple-names">
+            <div class="person-name">
+              <span class="person-first">آیدا</span>
+              <span class="person-family">اصغری</span>
+            </div>
+
+            <span class="couple-connector">و</span>
+
+            <div class="person-name">
+              <span class="person-first">متین</span>
+              <span class="person-family">ظل‌انوار</span>
+            </div>
+          </div>
+
+          <div class="invite-ornament">✦ ❦ ✦</div>
+        </section>
+
+        <!-- عکس‌های یادگاری به شکل پولاروید -->
+        <div class="photo-stickers">
+          <figure class="photo-sticker sticker-left">
+            <img src="./photos/ring.jpg" alt="عکس یادگاری اول">
+          </figure>
+          <figure class="photo-sticker sticker-right">
+            <img src="./photos/shoes.jpg" alt="عکس یادگاری دوم">
+          </figure>
+        </div>
+
+        <!-- متن احساسی دعوت -->
+        <div class="poem">
+          <p>در شب پیوند دو دل</p>
+          <p>جای حضورتان سبز</p>
+          <p>و نگاهتان گرمابخش محفل عشق ماست</p>
+        </div>
+
+        <!-- تاریخ و شمارش معکوس در یک بخش واحد -->
+        <section class="event-overview">
+          <p class="section-label">روز پیوند ما</p>
+          <h2 class="event-date">۱۲ آذر ۱۴۰۵</h2>
+
+          <div class="overview-rule"><span>✧</span></div>
+
+        </section>
+
+
+        <!-- ساعت، تالار و مسیر‌یابی -->
+        <section class="event-section">
+          <div class="event-details">
+            <div class="event-detail">
+              <span>زمان مراسم</span>
+              <strong>۱۸ الی ۲۳</strong>
+            </div>
+            <div class="event-detail">
+              <span>محل برگزاری</span>
+              <strong>تالار داریوش</strong>
+            </div>
+          </div>
+
+
+<div class="venue-address">
+    <span class="location-icon">
+        <svg viewBox="0 0 24 24" fill="none">
+            <path d="M19 10.2c0 5.1-7 11-7 11s-7-5.9-7-11a7 7 0 1 1 14 0Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+            <circle cx="12" cy="10" r="2.4"
+                stroke="currentColor"
+                stroke-width="1.5"/>
+        </svg>
+    </span>
+
+    <span class="venue-address-text">
+            کیلومتر ۳ جاده بجنورد به مشهد
+    </span>
+
+    <a
+        class="venue-map-link"
+        href="https://nshn.ir/e0rbL1fN_dovXa"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="باز کردن مسیر تالار در نشان"
+        title="باز کردن مسیر در نشان">
+        <img src="./icons/neshan.png" alt="">
+    </a>
+        <a
+        class="venue-map-link"
+        href="https://maps.app.goo.gl/q7XAWCTdB3gUk7fz7"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="باز کردن مسیر تالار در گوگل مپ"
+        title="باز کردن مسیر در گوگل مپ'">
+        <img src="./icons/google-maps.svg" alt="">
+    </a>
+</div>
+
+
+        </section>
+
+        <!-- اطلاع‌رسانی درباره عدم امکان حضور -->
+        <section class="attendance-section">
+          <p>چنانچه افتخار میزبانی از شما عزیزان را نداریم، لطفاً ما را مطلع فرمایید.</p>
+        </section>
+
+        <!-- پایان دعوت‌نامه -->
+        <section class="closing-section">
+          <div class="invite-ornament">❦</div>
+          <p class="closing-text">منتظرتون هستیم</p>
+          <p class="closing-names" dir="ltr">AYDA &amp; MATIN</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+
+
+  <!-- دکمه شناور کنترل موسیقی -->
+  <button
+    id="musicToggle"
+    class="music-toggle"
+    type="button"
+    aria-label="پخش موسیقی"
+    aria-pressed="false"
+    hidden>
+    <span id="musicIcon" aria-hidden="true">▶</span>
+    <span class="music-notes" aria-hidden="true">
+      <span>♪</span>
+      <span>♫</span>
+      <span>♪</span>
+    </span>
+  </button>
+
+  <div id="musicNotice" class="music-notice" role="status" aria-live="polite"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const music = document.getElementById("weddingMusic");
+      const toggleButton = document.getElementById("musicToggle");
+      const musicIcon = document.getElementById("musicIcon");
+      const musicNotice = document.getElementById("musicNotice");
+      const video = document.getElementById("introVideo");
+      const videoLayer = document.getElementById("videoLayer");
+      const videoHint = document.getElementById("videoStartHint");
+      const paper = document.getElementById("paperScreen");
+
+      if (!music || !toggleButton || !video || !videoLayer || !paper) {
+        console.error("Some wedding invitation elements could not be found.");
+        return;
+      }
+
+      /* موسیقی تا تعامل اولیه مهمان متوقف می‌ماند */
+      music.pause();
+      music.removeAttribute("autoplay");
+      music.loop = true;
+      music.volume = 0.7;
+
+      /* ویدیو همیشه بی‌صدا و در ابتدا متوقف است */
+      video.pause();
+      video.muted = true;
+      video.volume = 0;
+      paper.classList.remove("is-visible");
+      toggleButton.hidden = true;
+
+      function updateMusicButton() {
+        const playing = !music.paused && !music.ended;
+        musicIcon.textContent = playing ? "Ⅱ" : "▶";
+        toggleButton.setAttribute("aria-label", playing ? "توقف موسیقی" : "پخش موسیقی");
+        toggleButton.setAttribute("aria-pressed", String(playing));
+      }
+
+      function showNotice(message) {
+        musicNotice.textContent = message || "";
+      }
+
+
+      /* کنترل پخش و توقف از دکمه شناور */
+      toggleButton.addEventListener("click", async function () {
+        if (music.paused) {
+          try {
+            await music.play();
+            showNotice("");
+          } catch (error) {
+            showNotice("پخش موسیقی ممکن نیست. وجود فایل music.mp3 و تنظیمات صدای مرورگر را بررسی کنید.");
+            console.error("Music playback failed:", error);
+          }
+        } else {
+          music.pause();
+          showNotice("");
+        }
+        updateMusicButton();
+      });
+
+      music.addEventListener("play", function () {
+        toggleButton.hidden = false;
+        updateMusicButton();
+      });
+      music.addEventListener("pause", updateMusicButton);
+      music.addEventListener("ended", updateMusicButton);
+
+      /* راهنمای کلیک به محض شروع واقعی پخش ویدیو ناپدید می‌شود */
+      video.addEventListener("play", function () {
+        if (videoHint) videoHint.hidden = true;
+      }, { once: true });
+
+/* با اولین کلیک، موسیقی و ویدیو هم‌زمان شروع می‌شوند */
+videoLayer.addEventListener("click", function () {
+
+    if (!video.paused || video.ended) return;
+
+    // کنترل موسیقی از همان لحظه شروع در دسترس باشد
+    toggleButton.hidden = false;
+
+    // شروع ویدیو
+    const videoPlay = video.play();
+    videoPlay.then(function () {
+    if (videoHint) {
+        videoHint.hidden = true;
+    }
+});
+
+    // شروع موسیقی در همان تعامل کاربر
+    const musicPlay = music.play();
+
+    videoPlay.catch(function (error) {
+        console.error("Video playback failed:", error);
+        showNotice("پخش ویدیو انجام نشد. وجود فایل intro.mp4 را بررسی کنید.");
+    });
+
+    musicPlay.then(function () {
+        showNotice("");
+    }).catch(function (error) {
+        console.error("Music playback failed:", error);
+        showNotice("برای پخش موسیقی از دکمه شناور استفاده کنید.");
+    });
+
+});
+
+      /* پایان ویدیو: نمایش فوری صفحه کاغذی، بدون fade یا transition */
+      video.addEventListener("ended", function () {
+        videoLayer.hidden = true;
+        paper.classList.add("is-visible");
+
+        // دکمه کنترل موسیقی روی کارت دعوت هم باقی بماند
+        toggleButton.hidden = false;
+        updateMusicButton();
+      });
+
+      updateMusicButton();
+
+      /* شمارش معکوس تا ۱۴ آذر ۱۴۰۵، ساعت ۱۷ به وقت ایران */
+      const eventTime = new Date("2026-12-03T17:00:00+03:30").getTime();
+      const digitMap = "۰۱۲۳۴۵۶۷۸۹";
+
+      function toPersianDigits(value) {
+        return String(value).replace(/\d/g, function (digit) {
+          return digitMap[Number(digit)];
+        });
+      }
+
+      function updateCountdown() {
+        const remaining = eventTime - Date.now();
+        const timer = document.getElementById("countdownTimer");
+        const ended = document.getElementById("countdownEnded");
+
+        if (!timer || !ended) return;
+
+        if (remaining <= 0) {
+          timer.hidden = true;
+          ended.hidden = false;
+          return;
+        }
+
+        const days = Math.floor(remaining / 86400000);
+        const hours = Math.floor((remaining % 86400000) / 3600000);
+        const minutes = Math.floor((remaining % 3600000) / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+
+        document.getElementById("countDays").textContent = toPersianDigits(String(days).padStart(2, "0"));
+        document.getElementById("countHours").textContent = toPersianDigits(String(hours).padStart(2, "0"));
+        document.getElementById("countMinutes").textContent = toPersianDigits(String(minutes).padStart(2, "0"));
+        document.getElementById("countSeconds").textContent = toPersianDigits(String(seconds).padStart(2, "0"));
+      }
+
+      updateCountdown();
+      window.setInterval(updateCountdown, 1000);
+    });
+  </script>
+</body>
+</html>
