@@ -2259,6 +2259,38 @@
     }
 
 
+
+    /* === دریافت کامل ویدیو قبل از نمایش دکمه پخش === */
+    .intro-loading {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: #35392c;
+      cursor: default;
+    }
+    .intro-loading[hidden] { display: none !important; }
+    .intro-loading-card {
+      width: min(100%, 320px);
+      padding: 30px 24px;
+      border-radius: 10px;
+      background: #f7f2e6;
+      color: #4d5038;
+      text-align: center;
+      border: 1px solid rgba(173,149,97,.55);
+      box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    }
+    .intro-loading-ornament { font-size: 26px; color: #9d8b62; margin-bottom: 12px; }
+    .intro-loading-title { font-family: "Vazirmatn", sans-serif; font-weight: 600; font-size: 15px; margin: 0 0 8px; }
+    .intro-loading-description { font-size: 12px; line-height: 2; margin: 0 0 17px; }
+    .intro-loading-track { height: 5px; border-radius: 12px; background: rgba(93,96,69,.18); overflow: hidden; }
+    .intro-loading-track span { display: block; width: 0; height: 100%; background: #858568; transition: width .12s linear; }
+    .intro-loading-percent { display: block; font-size: 11px; margin-top: 10px; font-family: "Vazirmatn", sans-serif; }
+    .intro-retry { margin-top: 16px; padding: 9px 20px; border: none; background: #5d6045; color: #fff; border-radius: 25px; font: 12px "Vazirmatn",sans-serif; cursor: pointer; }
+    .intro-retry[hidden] { display: none !important; }
+
   </style>
 </head>
 
@@ -2270,15 +2302,27 @@
   <div class="video-layer" id="videoLayer">
     <video
       id="introVideo"
-      src="./intro.mp4"
-      preload="auto"
+      preload="none"
       playsinline
       webkit-playsinline
       muted
       disablepictureinpicture>
     </video>
 
-    <div class="video-start-hint" id="videoStartHint" aria-hidden="true">
+    <div id="introLoading" class="intro-loading" role="status" aria-live="polite">
+      <div class="intro-loading-card">
+        <div class="intro-loading-ornament" aria-hidden="true">❦</div>
+        <p class="intro-loading-title">در حال آماده‌سازی دعوت‌نامه</p>
+        <p id="introLoadingDescription" class="intro-loading-description">ویدیوی آغازین در حال دریافت است…</p>
+        <div class="intro-loading-track" role="progressbar" aria-label="پیشرفت دریافت ویدیو" aria-valuemin="0" aria-valuemax="100" id="introLoadingProgress">
+          <span id="introLoadingFill"></span>
+        </div>
+        <span id="introLoadingPercent" class="intro-loading-percent">در حال دریافت…</span>
+        <button id="introRetry" class="intro-retry" type="button" hidden>تلاش دوباره</button>
+      </div>
+    </div>
+
+    <div class="video-start-hint" id="videoStartHint" aria-hidden="true" hidden>
       <span class="hint-play">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M8 5.8c0-.78.85-1.26 1.52-.86l10.1 6.2a1 1 0 0 1 0 1.72l-10.1 6.2A1 1 0 0 1 8 18.2V5.8z"/>
@@ -2497,48 +2541,148 @@
       music.addEventListener("pause", updateMusicButton);
       music.addEventListener("ended", updateMusicButton);
 
-      /* راهنمای کلیک به محض شروع واقعی پخش ویدیو ناپدید می‌شود */
-      video.addEventListener("play", function () {
+      const loading = document.getElementById("introLoading");
+      const loadingDescription = document.getElementById("introLoadingDescription");
+      const loadingFill = document.getElementById("introLoadingFill");
+      const loadingPercent = document.getElementById("introLoadingPercent");
+      const loadingProgress = document.getElementById("introLoadingProgress");
+      const retryButton = document.getElementById("introRetry");
+      const scrollContainer = paper.querySelector(".invitation-content");
+      let introReady = false;
+      let introBlobURL = null;
+      let autoScrollTimer = null;
+      let autoScrollFrame = null;
+      let autoScrollStopped = false;
+
+      /* دریافت کل فایل با fetch: ویدیو فقط پس از دریافت کامل اجازه پخش دارد. */
+      async function downloadIntro() {
+        introReady = false;
+        loading.hidden = false;
         if (videoHint) videoHint.hidden = true;
+        retryButton.hidden = true;
+        loadingDescription.textContent = "ویدیوی آغازین در حال دریافت است…";
+        loadingPercent.textContent = "در حال دریافت…";
+        loadingFill.style.width = "0%";
+        loadingProgress.removeAttribute("aria-valuenow");
+        try {
+          const response = await fetch("./intro.mp4", { cache: "default" });
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          const total = Number(response.headers.get("content-length")) || 0;
+          let blob;
+          if (response.body && response.body.getReader) {
+            const reader = response.body.getReader();
+            const chunks = [];
+            let received = 0;
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+              received += value.byteLength;
+              if (total > 0) {
+                const percent = Math.min(100, Math.round(received / total * 100));
+                loadingFill.style.width = percent + "%";
+                loadingPercent.textContent = percent.toLocaleString("fa-IR") + "٪";
+                loadingProgress.setAttribute("aria-valuenow", String(percent));
+              } else {
+                loadingPercent.textContent = (received / (1024 * 1024)).toFixed(1) + " MB دریافت شد";
+              }
+            }
+            blob = new Blob(chunks, { type: response.headers.get("content-type") || "video/mp4" });
+          } else {
+            blob = await response.blob();
+          }
+          if (!blob.size) throw new Error("Empty video file");
+          if (introBlobURL) URL.revokeObjectURL(introBlobURL);
+          introBlobURL = URL.createObjectURL(blob);
+          video.src = introBlobURL;
+          video.load();
+          await new Promise(function (resolve, reject) {
+            if (video.readyState >= 2) return resolve();
+            const timeout = setTimeout(function () { cleanup(); reject(new Error("Video decoding timed out")); }, 20000);
+            function cleanup() {
+              clearTimeout(timeout);
+              video.removeEventListener("loadeddata", ready);
+              video.removeEventListener("error", failed);
+            }
+            function ready() { cleanup(); resolve(); }
+            function failed() { cleanup(); reject(new Error("Video format is not supported")); }
+            video.addEventListener("loadeddata", ready, { once: true });
+            video.addEventListener("error", failed, { once: true });
+          });
+          introReady = true;
+          loading.hidden = true;
+          if (videoHint) videoHint.hidden = false;
+        } catch (error) {
+          console.error("Unable to download intro completely:", error);
+          loadingDescription.textContent = "دریافت ویدیو انجام نشد. اتصال اینترنت را بررسی کنید.";
+          loadingPercent.textContent = "";
+          retryButton.hidden = false;
+        }
+      }
+      retryButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+        downloadIntro();
+      });
+      downloadIntro();
+      window.addEventListener("pagehide", function () {
+        if (introBlobURL) URL.revokeObjectURL(introBlobURL);
       }, { once: true });
 
-/* با اولین کلیک، موسیقی و ویدیو هم‌زمان شروع می‌شوند */
-videoLayer.addEventListener("click", function () {
+      videoLayer.addEventListener("click", function () {
+        if (!introReady || !video.paused || video.ended) return;
+        toggleButton.hidden = false;
+        if (videoHint) videoHint.hidden = true;
+        /* هر دو play در همان کلیک فراخوانی می‌شوند تا مرورگر اجازه پخش موسیقی بدهد. */
+        const videoPlay = video.play();
+        const musicPlay = music.play();
+        videoPlay.catch(function (error) {
+          console.error("Video playback failed:", error);
+          if (videoHint) videoHint.hidden = false;
+          showNotice("پخش ویدیو انجام نشد. دوباره لمس کنید.");
+        });
+        musicPlay.then(function () {
+          showNotice("");
+        }).catch(function (error) {
+          console.error("Music playback failed:", error);
+          showNotice("برای پخش موسیقی از دکمه شناور استفاده کنید.");
+        });
+      });
 
-    if (!video.paused || video.ended) return;
-
-    // کنترل موسیقی از همان لحظه شروع در دسترس باشد
-    toggleButton.hidden = false;
-
-    // شروع ویدیو
-    const videoPlay = video.play();
-    videoPlay.then(function () {
-    if (videoHint) {
-        videoHint.hidden = true;
-    }
-});
-
-    // شروع موسیقی در همان تعامل کاربر
-    const musicPlay = music.play();
-
-    videoPlay.catch(function (error) {
-        console.error("Video playback failed:", error);
-        showNotice("پخش ویدیو انجام نشد. وجود فایل intro.mp4 را بررسی کنید.");
-    });
-
-    musicPlay.then(function () {
-        showNotice("");
-    }).catch(function (error) {
-        console.error("Music playback failed:", error);
-        showNotice("برای پخش موسیقی از دکمه شناور استفاده کنید.");
-    });
-
-});
+      /* بعد از شش ثانیه، شروع اسکرول آرام؛ هر حرکت دستی آن را متوقف می‌کند. */
+      function startAutoScrollAfterReveal() {
+        if (!scrollContainer || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        autoScrollStopped = false;
+        let previousTime = null;
+        const stop = function () {
+          autoScrollStopped = true;
+          clearTimeout(autoScrollTimer);
+          if (autoScrollFrame !== null) cancelAnimationFrame(autoScrollFrame);
+        };
+        ["wheel", "touchstart", "pointerdown", "keydown"].forEach(function (name) {
+          const target = name === "keydown" ? document : scrollContainer;
+          target.addEventListener(name, stop, { once: true, passive: true });
+        });
+        function advance(time) {
+          if (autoScrollStopped) return;
+          if (document.hidden) { previousTime = null; autoScrollFrame = requestAnimationFrame(advance); return; }
+          if (previousTime !== null) {
+            const delta = Math.min(60, time - previousTime);
+            scrollContainer.scrollTop += delta * 0.023; // 23px/s
+          }
+          previousTime = time;
+          const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+          if (scrollContainer.scrollTop + 1 < maxScroll) autoScrollFrame = requestAnimationFrame(advance);
+        }
+        autoScrollTimer = setTimeout(function () {
+          if (!autoScrollStopped) autoScrollFrame = requestAnimationFrame(advance);
+        }, 6000);
+      }
 
       /* پایان ویدیو: نمایش فوری صفحه کاغذی، بدون fade یا transition */
       video.addEventListener("ended", function () {
         videoLayer.hidden = true;
         paper.classList.add("is-visible");
+        startAutoScrollAfterReveal();
 
         // دکمه کنترل موسیقی روی کارت دعوت هم باقی بماند
         toggleButton.hidden = false;
